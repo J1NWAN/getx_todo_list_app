@@ -31,9 +31,20 @@ class HomeView extends GetView<HomeController> {
           itemCount: controller.todos.length,
           itemBuilder: (context, index) {
             final todo = controller.todos[index];
-            return ListTile(
-              title: Text(todo.title),
-              subtitle: Text(todo.createdAt.toString()),
+            return InkWell(
+              onTap: () {
+                controller.updateTodo(todo.id);
+              },
+              child: ListTile(
+                title: Text(todo.title),
+                subtitle: Text(todo.createdAt.toString()),
+                trailing: IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () {
+                    controller.deleteTodo(todo.id);
+                  },
+                ),
+              ),
             );
           },
         ),

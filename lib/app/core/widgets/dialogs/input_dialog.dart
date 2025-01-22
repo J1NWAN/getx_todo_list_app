@@ -65,7 +65,7 @@ class InputDialog extends StatelessWidget {
                 text: cancelText?.tr ?? '취소'.tr,
                 onPressed: () {
                   if (onCancel != null) onCancel!();
-                  Get.back(result1: null);
+                  Get.back(result: null);
                 },
                 backgroundColor: Colors.grey[300],
                 textColor: Colors.black87,
