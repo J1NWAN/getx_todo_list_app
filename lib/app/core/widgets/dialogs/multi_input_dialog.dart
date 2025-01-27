@@ -8,6 +8,8 @@ class InputField {
   final String? initialValue;
   final TextInputType? keyboardType;
   final bool isRequired;
+  final bool obscureText;
+  final bool showPasswordToggle;
 
   InputField({
     required this.label,
@@ -15,6 +17,8 @@ class InputField {
     this.initialValue,
     this.keyboardType,
     this.isRequired = false,
+    this.obscureText = false,
+    this.showPasswordToggle = false,
   });
 }
 
@@ -29,6 +33,7 @@ class MultiInputDialog extends StatelessWidget {
   final VoidCallback? onCancel;
 
   final List<TextEditingController> _controllers = [];
+  final List<RxBool> _obscureTextList = [];
 
   MultiInputDialog({
     super.key,
@@ -43,6 +48,7 @@ class MultiInputDialog extends StatelessWidget {
   }) {
     for (var field in fields) {
       _controllers.add(TextEditingController(text: field.initialValue ?? ''));
+      _obscureTextList.add(field.obscureText.obs);
     }
   }
 
@@ -64,13 +70,26 @@ class MultiInputDialog extends StatelessWidget {
               fields.length,
               (index) => Padding(
                 padding: const EdgeInsets.only(bottom: 16),
-                child: TextField(
-                  controller: _controllers[index],
-                  keyboardType: fields[index].keyboardType,
-                  decoration: InputDecoration(
-                    labelText: fields[index].label,
-                    hintText: fields[index].hintText,
-                    border: const OutlineInputBorder(),
+                child: Obx(
+                  () => TextField(
+                    controller: _controllers[index],
+                    keyboardType: fields[index].keyboardType,
+                    obscureText: _obscureTextList[index].value,
+                    decoration: InputDecoration(
+                      labelText: fields[index].label,
+                      hintText: fields[index].hintText,
+                      border: const OutlineInputBorder(),
+                      suffixIcon: fields[index].showPasswordToggle
+                          ? IconButton(
+                              icon: Icon(
+                                _obscureTextList[index].value ? Icons.visibility_off : Icons.visibility,
+                              ),
+                              onPressed: () {
+                                _obscureTextList[index].value = !_obscureTextList[index].value;
+                              },
+                            )
+                          : null,
+                    ),
                   ),
                 ),
               ),
@@ -97,10 +116,25 @@ class MultiInputDialog extends StatelessWidget {
               child: CustomButton(
                 text: confirmText?.tr ?? '저장'.tr,
                 onPressed: () {
+                  final values = _controllers.map((c) => c.text).toList();
+
+                  if (fields.every((field) => field.isRequired)) {
+                    // 필수 입력 필드 검사
+                    for (int i = 0; i < fields.length; i++) {
+                      if (fields[i].isRequired && values[i].isEmpty) {
+                        Get.snackbar(
+                          '알림',
+                          '${fields[i].label}을(를) 입력해주세요.',
+                          snackPosition: SnackPosition.TOP,
+                        );
+                        return; // 다이얼로그 유지
+                      }
+                    }
+                  }
+
+                  // 모든 검증을 통과하면 다이얼로그 닫기
                   if (onConfirm != null) onConfirm!();
-                  Get.back(
-                    result: _controllers.map((c) => c.text).toList(),
-                  );
+                  Get.back(result: values);
                 },
               ),
             ),

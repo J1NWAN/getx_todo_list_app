@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getx_app_base/app/core/widgets/buttons/custom_button.dart';
+import 'package:getx_app_base/app/core/widgets/dialogs/multi_input_dialog.dart';
 import 'package:getx_app_base/app/core/widgets/inputs/custom_text_field.dart';
 import 'package:getx_app_base/app/modules/login/controllers/login_controller.dart';
 
@@ -57,12 +58,14 @@ class LoginView extends GetView<LoginController> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   TextButton(
-                    onPressed: () {},
-                    child: const Text('아이디 찾기'),
+                    onPressed: () {
+                      controller.signupDialog();
+                    },
+                    child: const Text('회원가입', style: TextStyle(color: Colors.grey)),
                   ),
                   TextButton(
                     onPressed: () {},
-                    child: const Text('비밀번호 찾기'),
+                    child: const Text('비밀번호 찾기', style: TextStyle(color: Colors.grey)),
                   ),
                 ],
               ),
@@ -74,6 +77,8 @@ class LoginView extends GetView<LoginController> {
                 onPressed: () {
                   if (controller.idController.text.isEmpty || controller.passwordController.text.isEmpty) {
                     Get.snackbar('알림', '아이디와 비밀번호를 입력해주세요.');
+                  } else {
+                    controller.login();
                   }
                 },
               ),

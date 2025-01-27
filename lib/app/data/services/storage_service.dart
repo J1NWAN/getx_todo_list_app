@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:get_storage/get_storage.dart';
+import 'package:getx_app_base/app/data/models/user_model.dart';
 import '../models/todo_model.dart';
 
 class StorageService {
@@ -7,6 +8,7 @@ class StorageService {
   final _themeKey = 'theme_mode';
   static const LOCALE_KEY = 'locale';
   static const String TODOS_KEY = 'todos';
+  static const String USERS_KEY = 'users';
 
   bool get isDarkMode => _box.read(_themeKey) ?? false;
 
@@ -33,5 +35,37 @@ class StorageService {
       todos.map((todo) => todo.toJson()).toList(),
     );
     await _box.write(TODOS_KEY, encodedTodos);
+  }
+
+  // 유저 조회
+  UserModel? getUser(String id, String password) {
+    final usersJson = _box.read<String>(USERS_KEY);
+    if (usersJson == null) return null;
+
+    final List<dynamic> decoded = json.decode(usersJson);
+    print('decoded: $decoded');
+    for (var user in decoded) {
+      if (user['id'] == id && user['password'] == password) {
+        return UserModel.fromJson(user);
+      }
+    }
+    return null;
+  }
+
+  Future<List<UserModel>> getUsers() async {
+    final usersJson = _box.read<String>(USERS_KEY);
+    if (usersJson == null) return [];
+
+    final List<dynamic> decoded = json.decode(usersJson);
+    return decoded.map((json) => UserModel.fromJson(json)).toList();
+  }
+
+  Future<void> saveUser(UserModel user) async {
+    print(user.id);
+    print(user.password);
+    print(user.name);
+
+    final encodedUsers = json.encode([user.toJson()]);
+    await _box.write(USERS_KEY, encodedUsers);
   }
 }
