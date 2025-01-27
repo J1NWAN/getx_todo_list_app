@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getx_app_base/app/core/utils/dialog_utils.dart';
+import 'package:getx_app_base/app/core/widgets/dialogs/multi_input_dialog.dart';
 import 'package:getx_app_base/app/data/models/todo_model.dart';
 import 'package:getx_app_base/app/data/services/storage_service.dart';
 import 'package:uuid/uuid.dart';
@@ -95,6 +96,42 @@ class HomeController extends GetxController {
         '일정이 수정되었습니다.',
         snackPosition: SnackPosition.BOTTOM,
       );
+    }
+  }
+
+  Future<void> multiInputDialog() async {
+    final result = await Get.dialog<List<String>>(
+      MultiInputDialog(
+        title: '사용자 정보 입력',
+        message: '아래 정보를 입력해주세요.',
+        fields: [
+          InputField(
+            label: '이름',
+            hintText: '이름을 입력하세요',
+            keyboardType: TextInputType.name,
+            isRequired: true,
+          ),
+          InputField(
+            label: '이메일',
+            hintText: '이메일을 입력하세요',
+            keyboardType: TextInputType.emailAddress,
+          ),
+          InputField(
+            label: '전화번호',
+            hintText: '전화번호를 입력하세요',
+            keyboardType: TextInputType.phone,
+          ),
+        ],
+        confirmText: '저장',
+        cancelText: '취소',
+      ),
+    );
+
+    if (result != null) {
+      final name = result[0];
+      final email = result[1];
+      final phone = result[2];
+      // 결과 처리
     }
   }
 }

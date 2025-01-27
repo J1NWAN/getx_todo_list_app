@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getx_app_base/app/core/theme/theme_controller.dart';
-import 'package:getx_app_base/app/core/utils/dialog_utils.dart';
-import 'package:getx_app_base/app/core/widgets/buttons/custom_button.dart';
 import 'package:getx_app_base/app/modules/home/controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
