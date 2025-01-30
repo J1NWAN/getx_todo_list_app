@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getx_app_base/app/core/utils/dialog_utils.dart';
-import 'package:getx_app_base/app/core/widgets/dialogs/multi_input_dialog.dart';
 import 'package:getx_app_base/app/data/models/todo_model.dart';
 import 'package:getx_app_base/app/data/services/storage_service.dart';
 import 'package:uuid/uuid.dart';
@@ -97,5 +96,17 @@ class HomeController extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
       );
     }
+  }
+
+  // 일정 완료
+  Future<void> successTodo(String id) async {
+    final index = _todos.indexWhere((todo) => todo.id == id);
+    _todos[index] = TodoModel(
+      id: _todos[index].id,
+      title: _todos[index].title,
+      isCompleted: true,
+      createdAt: _todos[index].createdAt,
+    );
+    await _saveTodos();
   }
 }

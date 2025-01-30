@@ -40,6 +40,14 @@ class HomeView extends GetView<HomeController> {
                 controller.updateTodo(todo.id);
               },
               child: ListTile(
+                leading: IconButton(
+                  icon: Icon(
+                    todo.isCompleted ? Icons.check_box : Icons.check_box_outline_blank,
+                  ),
+                  onPressed: () {
+                    controller.successTodo(todo.id);
+                  },
+                ),
                 title: Text(todo.title),
                 subtitle: Text(todo.createdAt.toString()),
                 trailing: IconButton(
