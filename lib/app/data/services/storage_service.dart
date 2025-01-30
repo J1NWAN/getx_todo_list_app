@@ -43,7 +43,6 @@ class StorageService {
     if (usersJson == null) return null;
 
     final List<dynamic> decoded = json.decode(usersJson);
-    print('decoded: $decoded');
     for (var user in decoded) {
       if (user['id'] == id && user['password'] == password) {
         return UserModel.fromJson(user);
@@ -61,11 +60,35 @@ class StorageService {
   }
 
   Future<void> saveUser(UserModel user) async {
-    print(user.id);
-    print(user.password);
-    print(user.name);
-
     final encodedUsers = json.encode([user.toJson()]);
     await _box.write(USERS_KEY, encodedUsers);
+  }
+
+  // 유저 찾기
+  Future<UserModel?> findUser(String id, String name) async {
+    final users = await getUsers();
+    for (var user in users) {
+      if (user.id == id && user.name == name) {
+        return user;
+      }
+    }
+    return null;
+  }
+
+  Future<void> updateUserPassword(String id, String newPassword) async {
+    final users = await getUsers();
+    for (var user in users) {
+      if (user.id == id) {
+        final updatedUser = UserModel(
+          id: user.id,
+          password: newPassword,
+          name: user.name,
+          createdAt: user.createdAt,
+        );
+        users[users.indexOf(user)] = updatedUser;
+        final encodedUsers = json.encode(users.map((u) => u.toJson()).toList());
+        await _box.write(USERS_KEY, encodedUsers);
+      }
+    }
   }
 }

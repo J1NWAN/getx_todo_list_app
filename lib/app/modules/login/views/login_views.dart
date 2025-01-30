@@ -64,7 +64,9 @@ class LoginView extends GetView<LoginController> {
                     child: const Text('회원가입', style: TextStyle(color: Colors.grey)),
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      controller.findPasswordDialog();
+                    },
                     child: const Text('비밀번호 찾기', style: TextStyle(color: Colors.grey)),
                   ),
                 ],
