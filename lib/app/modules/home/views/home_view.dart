@@ -13,6 +13,12 @@ class HomeView extends GetView<HomeController> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('나만의 할 일 목록'),
+        leading: IconButton(
+          icon: const Icon(Icons.logout),
+          onPressed: () {
+            Get.offAllNamed('/login');
+          },
+        ),
         actions: [
           Obx(
             () => IconButton(
