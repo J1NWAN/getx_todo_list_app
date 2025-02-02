@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getx_app_base/app/core/utils/dialog_utils.dart';
 import 'package:getx_app_base/app/core/utils/logger.dart';
+import 'package:getx_app_base/app/data/models/category_model.dart';
 import 'package:getx_app_base/app/data/models/todo_model.dart';
 import 'package:getx_app_base/app/data/services/master_storage_service.dart';
 import 'package:uuid/uuid.dart';
@@ -37,30 +38,30 @@ class HomeController extends GetxController {
 
   // 일정 추가 Dialog 호출 및 일정 저장
   Future<void> createTodo() async {
-    final result = await DialogUtils.showInput(
+    final result = await DialogUtils.showTodoInput(
       title: '일정 추가',
       message: '추가할 일정을 입력해주세요.',
       hintText: '일정을 입력하세요',
+      categories: [
+        CategoryModel(id: '1', name: '업무', color: '0xFFFF0000'),
+        CategoryModel(id: '2', name: '개인', color: '0xFF00FF00'),
+        CategoryModel(id: '3', name: '가족', color: '0xFF0000FF'),
+      ],
       cancelText: '취소',
       confirmText: '추가',
       keyboardType: TextInputType.name,
     );
 
-    if (result != null && result.isNotEmpty) {
+    if (result != null) {
       final todo = TodoModel(
         id: const Uuid().v4(),
-        title: result,
+        title: result['title']!,
+        categoryId: result['categoryId']!,
         createdAt: DateTime.now(),
       );
 
       _todos.add(todo);
       await _saveTodos();
-
-      Get.snackbar(
-        '성공',
-        '새로운 일정이 추가되었습니다.',
-        snackPosition: SnackPosition.BOTTOM,
-      );
     }
   }
 
@@ -89,7 +90,7 @@ class HomeController extends GetxController {
   Future<void> updateTodo(String id) async {
     TodoModel todo = _todos.firstWhere((todo) => todo.id == id);
 
-    final result = await DialogUtils.showInput(
+    final result = await DialogUtils.showTodoInput(
       title: '일정 수정',
       message: '수정할 일정을 입력해주세요.',
       hintText: '일정을 입력하세요',
@@ -97,13 +98,20 @@ class HomeController extends GetxController {
       confirmText: '수정',
       keyboardType: TextInputType.name,
       initialValue: todo.title,
+      selectedCategoryId: todo.categoryId,
+      categories: [
+        CategoryModel(id: '1', name: '업무', color: '0xFFFF0000'),
+        CategoryModel(id: '2', name: '개인', color: '0xFF00FF00'),
+        CategoryModel(id: '3', name: '가족', color: '0xFF0000FF'),
+      ],
     );
 
     if (result != null && result.isNotEmpty) {
       final index = _todos.indexWhere((todo) => todo.id == id);
       _todos[index] = TodoModel(
         id: id,
-        title: result,
+        title: result['title']!,
+        categoryId: result['categoryId']!,
         createdAt: todo.createdAt,
       );
 
@@ -123,9 +131,39 @@ class HomeController extends GetxController {
     _todos[index] = TodoModel(
       id: _todos[index].id,
       title: _todos[index].title,
+      categoryId: _todos[index].categoryId,
       isCompleted: true,
       createdAt: _todos[index].createdAt,
     );
     await _saveTodos();
   }
+
+  String getCategoryColor(String? categoryId) {
+    if (categoryId == null) return '0xFF808080'; // 기본 회색
+
+    final category = categories.firstWhereOrNull(
+      (category) => category.id == categoryId,
+    );
+
+    return category?.color ?? '0xFF808080'; // 카테고리가 없으면 기본 회색 반환
+  }
+
+  // 카테고리 목록 (임시 데이터)
+  final categories = [
+    CategoryModel(
+      id: '1',
+      name: '업무',
+      color: '0xFFFF0000',
+    ),
+    CategoryModel(
+      id: '2',
+      name: '개인',
+      color: '0xFF00FF00',
+    ),
+    CategoryModel(
+      id: '3',
+      name: '가족',
+      color: '0xFF0000FF',
+    ),
+  ];
 }

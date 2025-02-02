@@ -35,6 +35,7 @@ class HomeView extends GetView<HomeController> {
           itemCount: controller.todos.length,
           itemBuilder: (context, index) {
             final todo = controller.todos[index];
+            final categoryColor = controller.getCategoryColor(todo.categoryId);
             return InkWell(
               onTap: () {
                 controller.updateTodo(todo.id);
@@ -48,7 +49,20 @@ class HomeView extends GetView<HomeController> {
                     controller.successTodo(todo.id);
                   },
                 ),
-                title: Text(todo.title),
+                title: Row(
+                  children: [
+                    Container(
+                      width: 16,
+                      height: 16,
+                      decoration: BoxDecoration(
+                        color: Color(int.parse(categoryColor)),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(todo.title),
+                  ],
+                ),
                 subtitle: Text(todo.createdAt.toString()),
                 trailing: IconButton(
                   icon: const Icon(Icons.delete),
