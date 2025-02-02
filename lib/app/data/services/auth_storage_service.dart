@@ -14,7 +14,11 @@ class AuthStorageService extends GetxService {
   }
 
   String? getCurrentUserId() {
-    return _box.read<String>(CURRENT_USER_KEY);
+    final usersJson = _box.read<String>(USERS_KEY);
+    if (usersJson == null) return null;
+
+    final List<dynamic> decoded = json.decode(usersJson);
+    return decoded[0]['id'];
   }
 
   Future<void> clearCurrentUser() async {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getx_app_base/app/core/utils/dialog_utils.dart';
+import 'package:getx_app_base/app/core/utils/logger.dart';
 import 'package:getx_app_base/app/data/models/todo_model.dart';
 import 'package:getx_app_base/app/data/services/master_storage_service.dart';
 import 'package:uuid/uuid.dart';
@@ -18,6 +19,7 @@ class HomeController extends GetxController {
 
   Future<void> _loadTodos() async {
     final userId = MasterStorageService.auth.getCurrentUserId();
+    Logger.info('userId: $userId');
     if (userId != null) {
       final savedTodos = MasterStorageService.todo.getTodos(userId);
       if (savedTodos != null) {
