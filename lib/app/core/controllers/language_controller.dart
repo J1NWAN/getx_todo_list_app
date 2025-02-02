@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:getx_app_base/app/data/services/storage_service.dart';
+import 'package:getx_app_base/app/data/services/master_storage_service.dart';
 
 class LanguageController extends GetxController {
-  final StorageService _storageService = Get.find<StorageService>();
   final _locale = const Locale('ko', 'KR').obs;
 
   Locale get locale => _locale.value;
@@ -15,7 +14,7 @@ class LanguageController extends GetxController {
   }
 
   void _loadLocale() {
-    final savedLocale = _storageService.locale;
+    final savedLocale = MasterStorageService.settings.locale;
     if (savedLocale != null) {
       final parts = savedLocale.split('_');
       if (parts.length == 2) {
@@ -27,7 +26,7 @@ class LanguageController extends GetxController {
   void changeLocale(String languageCode, String countryCode) {
     _locale.value = Locale(languageCode, countryCode);
     Get.updateLocale(_locale.value);
-    _storageService.saveLocale('${languageCode}_$countryCode');
+    MasterStorageService.settings.saveLocale('${languageCode}_$countryCode');
   }
 
   void toggleLanguage() {

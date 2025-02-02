@@ -1,10 +1,9 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import '../../data/services/storage_service.dart';
+import 'package:getx_app_base/app/data/services/master_storage_service.dart';
 import 'app_themes.dart';
 
 class ThemeController extends GetxController {
-  final StorageService _storageService = Get.find<StorageService>();
   final _isDarkMode = false.obs;
 
   bool get isDarkMode => _isDarkMode.value;
@@ -18,12 +17,12 @@ class ThemeController extends GetxController {
   }
 
   void _loadThemeMode() {
-    _isDarkMode.value = _storageService.isDarkMode;
+    _isDarkMode.value = MasterStorageService.settings.isDarkMode;
   }
 
   void toggleTheme() {
     _isDarkMode.value = !_isDarkMode.value;
     Get.changeThemeMode(themeMode);
-    _storageService.saveThemeMode(_isDarkMode.value);
+    MasterStorageService.settings.saveThemeMode(_isDarkMode.value);
   }
 }

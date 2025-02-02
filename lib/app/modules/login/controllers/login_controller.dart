@@ -3,10 +3,9 @@ import 'package:get/get.dart';
 import 'package:getx_app_base/app/core/utils/logger.dart';
 import 'package:getx_app_base/app/core/widgets/dialogs/multi_input_dialog.dart';
 import 'package:getx_app_base/app/data/models/user_model.dart';
-import 'package:getx_app_base/app/data/services/storage_service.dart';
+import 'package:getx_app_base/app/data/services/master_storage_service.dart';
 
 class LoginController extends GetxController {
-  final StorageService _storageService = Get.find<StorageService>();
   final TextEditingController idController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
@@ -16,7 +15,7 @@ class LoginController extends GetxController {
     final id = idController.text;
     final password = passwordController.text;
 
-    final user = _storageService.getUser(id, password);
+    final user = MasterStorageService.auth.getUser(id, password);
     if (user == null) {
       Get.snackbar('알림', '아이디 또는 비밀번호가 일치하지 않습니다.');
       return;
@@ -30,13 +29,13 @@ class LoginController extends GetxController {
     final password = passwordController.text;
     final name = nameController.text;
 
-    final users = await _storageService.getUsers();
+    final users = await MasterStorageService.auth.getUsers();
     if (users.any((user) => user.id == id)) {
       Get.snackbar('알림', '이미 존재하는 아이디입니다.');
       return;
     }
 
-    final user = await _storageService.saveUser(
+    final user = await MasterStorageService.auth.saveUser(
       UserModel(
         id: id,
         password: password,
@@ -84,7 +83,7 @@ class LoginController extends GetxController {
       final name = result[2];
 
       if (id.isNotEmpty && password.isNotEmpty && name.isNotEmpty) {
-        final users = await _storageService.getUsers();
+        final users = await MasterStorageService.auth.getUsers();
         if (users.any((user) => user.id == id)) {
           Get.snackbar('알림', '이미 존재하는 아이디입니다.');
           return;
@@ -97,7 +96,7 @@ class LoginController extends GetxController {
           createdAt: DateTime.now(),
         );
 
-        await _storageService.saveUser(user);
+        await MasterStorageService.auth.saveUser(user);
 
         Get.snackbar('알림', '회원가입이 완료되었습니다.');
       }
@@ -132,7 +131,7 @@ class LoginController extends GetxController {
       final id = result[0];
       final name = result[1];
 
-      final user = await _storageService.findUser(id, name);
+      final user = await MasterStorageService.auth.findUser(id, name);
       Logger.info('user: $user');
       if (user == null) {
         Get.snackbar('알림', '아이디 또는 이름이 일치하지 않습니다.');
@@ -159,7 +158,7 @@ class LoginController extends GetxController {
 
         if (newPassword != null) {
           final password = newPassword[0];
-          await _storageService.updateUserPassword(user.id, password);
+          await MasterStorageService.auth.updateUserPassword(user.id, password);
           Get.snackbar('알림', '비밀번호가 변경되었습니다.');
         }
       }

@@ -1,43 +1,26 @@
 import 'dart:convert';
+import 'package:get/get_state_manager/src/rx_flutter/rx_disposable.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:getx_app_base/app/data/models/user_model.dart';
-import '../models/todo_model.dart';
 
-class StorageService {
-  final _box = GetStorage();
-  final _themeKey = 'theme_mode';
-  static const LOCALE_KEY = 'locale';
-  static const String TODOS_KEY = 'todos';
+class AuthStorageService extends GetxService {
   static const String USERS_KEY = 'users';
+  static const String CURRENT_USER_KEY = 'current_user';
+  final _box = GetStorage();
 
-  bool get isDarkMode => _box.read(_themeKey) ?? false;
-
-  Future<void> saveThemeMode(bool isDarkMode) async {
-    await _box.write(_themeKey, isDarkMode);
+  // 현재 로그인한 사용자 ID 저장
+  Future<void> saveCurrentUserId(String userId) async {
+    await _box.write(CURRENT_USER_KEY, userId);
   }
 
-  String? get locale => _box.read(LOCALE_KEY);
-
-  Future<void> saveLocale(String locale) async {
-    await _box.write(LOCALE_KEY, locale);
+  String? getCurrentUserId() {
+    return _box.read<String>(CURRENT_USER_KEY);
   }
 
-  List<TodoModel>? getTodos() {
-    final todosJson = _box.read<String>(TODOS_KEY);
-    if (todosJson == null) return null;
-
-    final List<dynamic> decoded = json.decode(todosJson);
-    return decoded.map((json) => TodoModel.fromJson(json)).toList();
+  Future<void> clearCurrentUser() async {
+    await _box.remove(CURRENT_USER_KEY);
   }
 
-  Future<void> saveTodos(List<TodoModel> todos) async {
-    final encodedTodos = json.encode(
-      todos.map((todo) => todo.toJson()).toList(),
-    );
-    await _box.write(TODOS_KEY, encodedTodos);
-  }
-
-  // 유저 조회
   UserModel? getUser(String id, String password) {
     final usersJson = _box.read<String>(USERS_KEY);
     if (usersJson == null) return null;
@@ -64,7 +47,6 @@ class StorageService {
     await _box.write(USERS_KEY, encodedUsers);
   }
 
-  // 유저 찾기
   Future<UserModel?> findUser(String id, String name) async {
     final users = await getUsers();
     for (var user in users) {

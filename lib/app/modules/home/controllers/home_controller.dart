@@ -2,14 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getx_app_base/app/core/utils/dialog_utils.dart';
 import 'package:getx_app_base/app/data/models/todo_model.dart';
-import 'package:getx_app_base/app/data/services/storage_service.dart';
+import 'package:getx_app_base/app/data/services/master_storage_service.dart';
 import 'package:uuid/uuid.dart';
 
 class HomeController extends GetxController {
-  final StorageService _storageService = Get.find<StorageService>();
   final _todos = <TodoModel>[].obs;
 
   List<TodoModel> get todos => _todos;
+
+  @override
+  void onInit() {
+    super.onInit();
+    _loadTodos();
+  }
+
+  Future<void> _loadTodos() async {
+    final userId = MasterStorageService.auth.getCurrentUserId();
+    if (userId != null) {
+      final savedTodos = MasterStorageService.todo.getTodos(userId);
+      if (savedTodos != null) {
+        _todos.assignAll(savedTodos);
+      }
+    }
+  }
+
+  Future<void> _saveTodos() async {
+    final userId = MasterStorageService.auth.getCurrentUserId();
+    if (userId != null) {
+      await MasterStorageService.todo.saveTodos(userId, _todos);
+    }
+  }
 
   // 일정 추가 Dialog 호출 및 일정 저장
   Future<void> createTodo() async {
@@ -38,11 +60,6 @@ class HomeController extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
       );
     }
-  }
-
-  // 일정 저장
-  Future<void> _saveTodos() async {
-    await _storageService.saveTodos(_todos);
   }
 
   // 일정 삭제

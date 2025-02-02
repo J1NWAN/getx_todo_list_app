@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:get/get.dart';
 import 'package:getx_app_base/app/core/theme/theme_controller.dart';
 import 'package:getx_app_base/app/core/utils/device_utils.dart';
 import 'package:getx_app_base/app/core/utils/logger.dart';
-import 'package:getx_app_base/app/data/services/storage_service.dart';
 import 'package:getx_app_base/app/core/theme/app_themes.dart';
 import 'package:getx_app_base/app/routes/app_pages.dart';
 import 'package:getx_app_base/app/core/translations/app_translations.dart';
 import 'package:getx_app_base/app/core/controllers/language_controller.dart';
+import 'package:getx_app_base/app/data/services/master_storage_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await GetStorage.init();
-  Get.put(StorageService());
+
+  // 모든 스토리지 서비스 초기화
+  await MasterStorageService.init();
+
+  // 컨트롤러 초기화
   Get.put(ThemeController());
   Get.put(LanguageController());
 
