@@ -9,8 +9,23 @@ import 'package:uuid/uuid.dart';
 
 class HomeController extends GetxController {
   final _todos = <TodoModel>[].obs;
+  final RxString searchText = ''.obs;
+  final RxnString selectedCategoryId = RxnString();
 
   List<TodoModel> get todos => _todos;
+
+  // 필터링된 할 일 목록
+  List<TodoModel> get filteredTodos {
+    return _todos.where((todo) {
+      // 검색어 필터
+      final matchesSearch = todo.title.toLowerCase().contains(searchText.value.toLowerCase());
+
+      // 카테고리 필터
+      final matchesCategory = selectedCategoryId.value == null || todo.categoryId == selectedCategoryId.value;
+
+      return matchesSearch && matchesCategory;
+    }).toList();
+  }
 
   @override
   void onInit() {
@@ -166,4 +181,14 @@ class HomeController extends GetxController {
       color: '0xFF0000FF',
     ),
   ];
+
+  // 카테고리 필터 초기화
+  void clearCategoryFilter() {
+    selectedCategoryId.value = null;
+  }
+
+  // 검색어 초기화
+  void clearSearch() {
+    searchText.value = '';
+  }
 }
