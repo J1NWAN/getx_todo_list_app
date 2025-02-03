@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getx_app_base/app/core/theme/theme_controller.dart';
+import 'package:getx_app_base/app/core/widgets/buttons/custom_dropdown_button.dart';
 import 'package:getx_app_base/app/modules/home/controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -54,24 +55,23 @@ class HomeView extends GetView<HomeController> {
           ),
           // 카테고리 필터
           Row(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: Obx(() => DropdownButton(
-                      items: controller.categories
-                          .map((category) => DropdownMenuItem(
-                                value: category.id,
-                                child: Text(category.name),
-                              ))
-                          .toList(),
-                      value: controller.selectedCategoryId.value,
-                      onChanged: (value) {
-                        controller.selectedCategoryId.value = value;
-                        if (value == '0') {
-                          controller.clearCategoryFilter();
-                        }
-                      },
-                    )),
+                padding: const EdgeInsets.only(right: 8.0),
+                child: Obx(
+                  () => CustomDropDownButton(
+                    label: '카테고리',
+                    categories: controller.categories,
+                    value: controller.selectedCategoryId.value ?? '0',
+                    onChanged: (value) {
+                      controller.selectedCategoryId.value = value;
+                      if (value == '0') {
+                        controller.clearCategoryFilter();
+                      }
+                    },
+                  ),
+                ),
               ),
             ],
           ),
