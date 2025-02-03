@@ -53,44 +53,29 @@ class HomeView extends GetView<HomeController> {
             ),
           ),
           // 카테고리 필터
-          SizedBox(
-            height: 50,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: Obx(() => FilterChip(
-                        label: const Text('전체'),
-                        selected: controller.selectedCategoryId.value == null,
-                        onSelected: (selected) => controller.clearCategoryFilter(),
-                      )),
-                ),
-                ...controller.categories.map((category) {
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: Obx(() => FilterChip(
-                          label: Text(category.name),
-                          selected: controller.selectedCategoryId.value == category.id,
-                          selectedColor: Color(int.parse(category.color)).withOpacity(0.3),
-                          onSelected: (selected) {
-                            controller.selectedCategoryId.value = selected ? category.id : null;
-                          },
-                          avatar: Container(
-                            width: 12,
-                            height: 12,
-                            decoration: BoxDecoration(
-                              color: Color(int.parse(category.color)),
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                        )),
-                  );
-                }),
-              ],
-            ),
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Obx(() => DropdownButton(
+                      items: controller.categories
+                          .map((category) => DropdownMenuItem(
+                                value: category.id,
+                                child: Text(category.name),
+                              ))
+                          .toList(),
+                      value: controller.selectedCategoryId.value,
+                      onChanged: (value) {
+                        controller.selectedCategoryId.value = value;
+                        if (value == '0') {
+                          controller.clearCategoryFilter();
+                        }
+                      },
+                    )),
+              ),
+            ],
           ),
+
           // 할 일 목록
           Expanded(
             child: Obx(

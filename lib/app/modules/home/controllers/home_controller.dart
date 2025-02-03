@@ -20,8 +20,8 @@ class HomeController extends GetxController {
       // 검색어 필터
       final matchesSearch = todo.title.toLowerCase().contains(searchText.value.toLowerCase());
 
-      // 카테고리 필터
-      final matchesCategory = selectedCategoryId.value == null || todo.categoryId == selectedCategoryId.value;
+      // 카테고리 필터 ('0'은 전체 카테고리)
+      final matchesCategory = selectedCategoryId.value == '0' || todo.categoryId == selectedCategoryId.value;
 
       return matchesSearch && matchesCategory;
     }).toList();
@@ -30,6 +30,7 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    selectedCategoryId.value = '0'; // 초기값을 '전체' 카테고리로 설정
     _loadTodos();
   }
 
@@ -166,6 +167,11 @@ class HomeController extends GetxController {
   // 카테고리 목록 (임시 데이터)
   final categories = [
     CategoryModel(
+      id: '0', // 전체 카테고리를 위한 ID
+      name: '전체',
+      color: '0xFF808080',
+    ),
+    CategoryModel(
       id: '1',
       name: '업무',
       color: '0xFFFF0000',
@@ -184,7 +190,7 @@ class HomeController extends GetxController {
 
   // 카테고리 필터 초기화
   void clearCategoryFilter() {
-    selectedCategoryId.value = null;
+    selectedCategoryId.value = '0'; // '전체' 카테고리로 설정
   }
 
   // 검색어 초기화
