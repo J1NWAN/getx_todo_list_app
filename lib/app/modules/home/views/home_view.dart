@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:getx_app_base/app/core/theme/theme_controller.dart';
 import 'package:getx_app_base/app/core/utils/dialog_utils.dart';
 import 'package:getx_app_base/app/core/widgets/buttons/custom_dropdown_button.dart';
+import 'package:getx_app_base/app/core/widgets/dialogs/custom_date_picker_dialog.dart';
 import 'package:getx_app_base/app/modules/home/controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -83,6 +84,7 @@ class HomeView extends GetView<HomeController> {
                       },
                     )),
               ),
+
               // 날짜 필터 초기화 버튼
               if (controller.selectedDate.value != null)
                 IconButton(

@@ -122,4 +122,26 @@ class DialogUtils {
       barrierDismissible: isDismissible,
     );
   }
+
+  static Future<void> showBottomDatePicker({
+    DateTime? initialDate,
+    DateTime? minimumDate,
+    DateTime? maximumDate,
+    Function(DateTime)? onDateTimeChanged,
+    String? confirmText,
+    String? cancelText,
+  }) {
+    return Get.bottomSheet(
+      CustomDatePicker(
+        initialDate: initialDate,
+        minimumDate: minimumDate,
+        maximumDate: maximumDate,
+        onDateTimeChanged: onDateTimeChanged,
+        confirmText: confirmText,
+        cancelText: cancelText,
+      ),
+      isScrollControlled: true,
+      enableDrag: true,
+    );
+  }
 }
