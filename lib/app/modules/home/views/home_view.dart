@@ -64,9 +64,7 @@ class HomeView extends GetView<HomeController> {
                 child: Obx(() => OutlinedButton.icon(
                       icon: const Icon(Icons.calendar_today),
                       label: Text(
-                        controller.selectedDate.value != null
-                            ? '${controller.selectedDate.value!.year}-${controller.selectedDate.value!.month}-${controller.selectedDate.value!.day}'
-                            : '날짜 선택',
+                        controller.selectedDate.value != null ? controller.getFormattedDate(controller.selectedDate.value!) : '날짜 선택'.tr,
                       ),
                       onPressed: () async {
                         final result = await DialogUtils.showDatePicker(
@@ -75,6 +73,8 @@ class HomeView extends GetView<HomeController> {
                           initialDate: controller.selectedDate.value ?? DateTime.now(),
                           minimumDate: DateTime.now().subtract(const Duration(days: 365)),
                           maximumDate: DateTime.now().add(const Duration(days: 365)),
+                          cancelText: '취소',
+                          confirmText: '선택',
                         );
 
                         if (result != null) {

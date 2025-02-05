@@ -6,6 +6,7 @@ import 'package:getx_app_base/app/data/models/category_model.dart';
 import 'package:getx_app_base/app/data/models/todo_model.dart';
 import 'package:getx_app_base/app/data/services/master_storage_service.dart';
 import 'package:uuid/uuid.dart';
+import 'package:intl/intl.dart';
 
 class HomeController extends GetxController {
   final _todos = <TodoModel>[].obs;
@@ -210,5 +211,11 @@ class HomeController extends GetxController {
   // 날짜 비교 헬퍼 메서드
   bool isSameDay(DateTime date1, DateTime date2) {
     return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
+  }
+
+  String getFormattedDate(DateTime date) {
+    final locale = Get.locale?.languageCode ?? 'en';
+    final format = locale == 'ko' ? DateFormat('yyyy년 MM월 dd일') : DateFormat('MMM dd, yyyy');
+    return format.format(date);
   }
 }
