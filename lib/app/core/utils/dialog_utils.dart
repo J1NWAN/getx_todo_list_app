@@ -5,7 +5,7 @@ import '../widgets/dialogs/confirm_dialog.dart';
 import '../widgets/dialogs/loading_dialog.dart';
 import '../widgets/dialogs/input_dialog.dart';
 import '../widgets/dialogs/todo_input_dialog.dart';
-import '../widgets/dialogs/date_picker_dialog.dart';
+import '../widgets/dialogs/custom_date_picker_dialog.dart';
 
 class DialogUtils {
   static Future<bool?> showConfirm({

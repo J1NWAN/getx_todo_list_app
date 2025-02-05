@@ -8,6 +8,7 @@ import 'package:getx_app_base/app/routes/app_pages.dart';
 import 'package:getx_app_base/app/core/translations/app_translations.dart';
 import 'package:getx_app_base/app/core/controllers/language_controller.dart';
 import 'package:getx_app_base/app/data/services/master_storage_service.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,6 +45,15 @@ class MyApp extends StatelessWidget {
       translations: AppTranslations(),
       locale: languageController.locale,
       fallbackLocale: const Locale('ko', 'KR'),
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('ko', 'KR'),
+        Locale('en', 'US'),
+      ],
     );
   }
 }
