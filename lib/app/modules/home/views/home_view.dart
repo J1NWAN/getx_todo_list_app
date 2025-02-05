@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getx_app_base/app/core/theme/theme_controller.dart';
+import 'package:getx_app_base/app/core/utils/dialog_utils.dart';
 import 'package:getx_app_base/app/core/widgets/buttons/custom_dropdown_button.dart';
 import 'package:getx_app_base/app/modules/home/controllers/home_controller.dart';
 
@@ -57,6 +58,38 @@ class HomeView extends GetView<HomeController> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
+              // 날짜 필터
+              Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: Obx(() => OutlinedButton.icon(
+                      icon: const Icon(Icons.calendar_today),
+                      label: Text(
+                        controller.selectedDate.value != null
+                            ? '${controller.selectedDate.value!.year}-${controller.selectedDate.value!.month}-${controller.selectedDate.value!.day}'
+                            : '날짜 선택',
+                      ),
+                      onPressed: () async {
+                        final result = await DialogUtils.showDatePicker(
+                          title: '날짜 선택',
+                          message: '필터링할 날짜를 선택해주세요',
+                          initialDate: controller.selectedDate.value ?? DateTime.now(),
+                          minimumDate: DateTime.now().subtract(const Duration(days: 365)),
+                          maximumDate: DateTime.now().add(const Duration(days: 365)),
+                        );
+
+                        if (result != null) {
+                          controller.selectedDate.value = result;
+                        }
+                      },
+                    )),
+              ),
+              // 날짜 필터 초기화 버튼
+              if (controller.selectedDate.value != null)
+                IconButton(
+                  icon: const Icon(Icons.clear),
+                  onPressed: controller.clearDateFilter,
+                ),
+              // 기존 카테고리 필터
               Padding(
                 padding: const EdgeInsets.only(right: 8.0),
                 child: Obx(

@@ -11,6 +11,7 @@ class HomeController extends GetxController {
   final _todos = <TodoModel>[].obs;
   final RxString searchText = ''.obs;
   final RxnString selectedCategoryId = RxnString();
+  final Rxn<DateTime> selectedDate = Rxn<DateTime>();
 
   List<TodoModel> get todos => _todos;
 
@@ -23,7 +24,10 @@ class HomeController extends GetxController {
       // 카테고리 필터 ('0'은 전체 카테고리)
       final matchesCategory = selectedCategoryId.value == '0' || todo.categoryId == selectedCategoryId.value;
 
-      return matchesSearch && matchesCategory;
+      // 날짜 필터
+      final matchesDate = selectedDate.value == null || isSameDay(todo.createdAt, selectedDate.value!);
+
+      return matchesSearch && matchesCategory && matchesDate;
     }).toList();
   }
 
@@ -196,5 +200,15 @@ class HomeController extends GetxController {
   // 검색어 초기화
   void clearSearch() {
     searchText.value = '';
+  }
+
+  // 날짜 필터 초기화
+  void clearDateFilter() {
+    selectedDate.value = null;
+  }
+
+  // 날짜 비교 헬퍼 메서드
+  bool isSameDay(DateTime date1, DateTime date2) {
+    return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
   }
 }
