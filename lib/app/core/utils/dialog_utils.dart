@@ -5,6 +5,7 @@ import '../widgets/dialogs/confirm_dialog.dart';
 import '../widgets/dialogs/loading_dialog.dart';
 import '../widgets/dialogs/input_dialog.dart';
 import '../widgets/dialogs/todo_input_dialog.dart';
+import '../widgets/dialogs/date_picker_dialog.dart';
 
 class DialogUtils {
   static Future<bool?> showConfirm({
@@ -92,6 +93,31 @@ class DialogUtils {
         cancelText: cancelText,
         isDismissible: isDismissible,
         keyboardType: keyboardType,
+      ),
+      barrierDismissible: isDismissible,
+    );
+  }
+
+  static Future<DateTime?> showDatePicker({
+    required String title,
+    String? message,
+    required DateTime initialDate,
+    DateTime? minimumDate,
+    DateTime? maximumDate,
+    String? confirmText,
+    String? cancelText,
+    bool isDismissible = true,
+  }) {
+    return Get.dialog<DateTime>(
+      CustomDatePickerDialog(
+        title: title,
+        message: message,
+        initialDate: initialDate,
+        minimumDate: minimumDate,
+        maximumDate: maximumDate,
+        confirmText: confirmText,
+        cancelText: cancelText,
+        isDismissible: isDismissible,
       ),
       barrierDismissible: isDismissible,
     );
