@@ -13,8 +13,35 @@ class HomeController extends GetxController {
   final RxString searchText = ''.obs;
   final RxnString selectedCategoryId = RxnString();
   final Rxn<DateTime> selectedDate = Rxn<DateTime>();
+  final searchFocusNode = FocusNode();
 
   List<TodoModel> get todos => _todos;
+
+  // 검색어 추천 목록을 위한 상태
+  final RxList<String> suggestions = <String>[].obs;
+
+  // 검색어 추천 목록 업데이트
+  void updateSuggestions(String query) {
+    if (query.isEmpty) {
+      suggestions.clear();
+      return;
+    }
+
+    suggestions.value = _todos
+        .where((todo) => todo.title.toLowerCase().contains(query.toLowerCase()))
+        .map((todo) => todo.title)
+        .toSet() // 중복 제거
+        .toList()
+        .take(5) // 최대 5개까지만 표시
+        .toList();
+  }
+
+  // 검색어 선택
+  void selectSuggestion(String suggestion) {
+    searchText.value = suggestion;
+    suggestions.clear();
+    searchFocusNode.unfocus();
+  }
 
   // 필터링된 할 일 목록
   List<TodoModel> get filteredTodos {
@@ -201,6 +228,8 @@ class HomeController extends GetxController {
   // 검색어 초기화
   void clearSearch() {
     searchText.value = '';
+    suggestions.clear();
+    searchFocusNode.unfocus();
   }
 
   // 날짜 필터 초기화
@@ -217,5 +246,11 @@ class HomeController extends GetxController {
     final locale = Get.locale?.languageCode ?? 'en';
     final format = locale == 'ko' ? DateFormat('yyyy년 MM월 dd일') : DateFormat('MMM dd, yyyy');
     return format.format(date);
+  }
+
+  @override
+  void onClose() {
+    searchFocusNode.dispose();
+    super.onClose();
   }
 }
